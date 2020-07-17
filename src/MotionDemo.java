@@ -12,7 +12,7 @@ public class MotionDemo extends PApplet {
 //    double [] testVals = {1.9469477, 1.6669978, 2.0252397, 1.1230639, 1.7978036, 1.9344394, 0.3459814};
 
     int screenWidth = 1200, screenHeight = 900;
-    float constant = 100000f;
+    float constant = 1000000000f;
 
 //    float angle = PI/4;
 //    float radius = 200;
@@ -25,8 +25,10 @@ public class MotionDemo extends PApplet {
 
     boolean firstRun = true;
 
-//    private Function<Double, Double> function = t -> Math.cos(2 * Math.PI * t) - Math.sin(2 * Math.PI * t) ;
-    private Function<Double, Double> function = x -> Math.sin(x) * currentTime;
+    private Function<Double, Double> function = t ->  5  * ( 4 * ( Math.cos(2 * Math.PI * t) - 4 * Math.sin( 2 * Math.PI * t) ) );
+    private Function<Double, Double> fPrime = n ->
+    private Function<Double, Double> functionX = t -> Math.sin(2 * Math.PI * t) - Math.cos(2 * Math.PI * t) ;
+//    private Function<Double, Double> function = x -> Math.sin(x) * currentTime;
 
     ArrayList<Vector> pendulums = new ArrayList<>();
 
@@ -72,23 +74,26 @@ public class MotionDemo extends PApplet {
             if (pendulum.getPreviousVector() == null) {
                 translate(pendulum.getStringX(), pendulum.getStringY());
 //                pendulum.setTipX(pendulum.stringLength * pendulum.getLengthCoefficient() * cos(pendulum.getOffset() + pendulum.getAngle()));
-                pendulum.setTipX(pendulum.stringLength * pendulum.getLengthCoefficient() * cos(pendulum.getOffset() + pendulum.getAngle()));
-//                pendulum.setTipY(function.apply((currentTime)));
-                pendulum.setTipY((double) (pendulum.stringLength * pendulum.getLengthCoefficient() * sin(pendulum.getOffset() + pendulum.getAngle())));
-                line(0, 0, pendulum.getTipX(), (float) pendulum.getTipY());
+                pendulum.setTipX(pendulum.lengthCoefficient * cos(pendulum.getOffset()) + functionX.apply(currentTime));
+                pendulum.setTipY(pendulum.lengthCoefficient * sin(pendulum.getOffset()) + function.apply((currentTime)));
+//                pendulum.setTipY((double) (pendulum.stringLength * pendulum.getLengthCoefficient() * sin(pendulum.getOffset() + pendulum.getAngle())));
+                line(0, 0, (float) pendulum.getTipX(), (float) pendulum.getTipY());
                 fill(0);
 
             } else {
-                translate(pendulum.getPreviousVector().getTipX(), (float) pendulum.getPreviousVector().getTipY());
-                pendulum.setTipX((pendulum.stringLength * pendulum.getLengthCoefficient() * cos(pendulum.getOffset() + pendulum.getAngle())) /*+ pendulum.getPreviousVector().getTipX()*/);
-                pendulum.setTipY((double) (pendulum.stringLength * pendulum.getLengthCoefficient() * sin(pendulum.getOffset() + pendulum.getAngle())) /*+ pendulum.getPreviousVector().getTipY()*/);
-//                pendulum.setTipY(function.apply(currentTime));
-                line(0,0, pendulum.getTipX(), (float) pendulum.getTipY());
+                translate((float) pendulum.getPreviousVector().getTipX(), (float) pendulum.getPreviousVector().getTipY());
+//                pendulum.setTipY((double) (pendulum.stringLength * pendulum.getLengthCoefficient() * sin(pendulum.getOffset() + pendulum.getAngle())) /*+ pendulum.getPreviousVector().getTipY()*/);
+                pendulum.setTipX((double) (pendulum.stringLength * pendulum.getLengthCoefficient() * cos(pendulum.getOffset() + pendulum.getAngle())));
+//                pendulum.setTipX(pendulum.lengthCoefficient * cos(pendulum.getOffset()) + functionX.apply(currentTime));
+                pendulum.setTipY(pendulum.lengthCoefficient * sin(pendulum.getOffset()) + function.apply(currentTime));
+                line(0,0, (float) pendulum.getTipX(), (float) pendulum.getTipY());
                 fill(0);
+//                System.out.println(pendulum.getTipY());
+                System.out.println(currentTime);
 
             }
             fill(255, 0, 0);
-            ellipse(pendulum.getTipX(), (float) pendulum.getTipY(), pendulum.getMass(), pendulum.getMass());
+            ellipse((float) pendulum.getTipX(), (float) pendulum.getTipY(), pendulum.getMass(), pendulum.getMass());
 //            if (pendulums.get(0).getAngle() >=  2 * PI) {
 //                pendulum.setAngleRate(0);
 //            } else {
@@ -219,7 +224,7 @@ public class MotionDemo extends PApplet {
 
         for (Vector p : pendulums) {
             if (p.getPreviousVector() != null) {
-                p.setStringX(p.getPreviousVector().getTipX());
+                p.setStringX((float) p.getPreviousVector().getTipX());
                 p.setStringY((float) p.getPreviousVector().getTipY());
             } else {
                 p.setStringX(screenWidth/2f);

@@ -8,10 +8,10 @@ public class Vector {
 
     float velocity;
     float acceleration;
-    float tipX;
+    double tipX;
     double tipY;
 
-    float prevTipX;
+    double prevTipX;
     double prevTipY;
 
     float stringX;
@@ -129,11 +129,11 @@ public class Vector {
         this.previousVector = previousVector;
     }
 
-    public float getTipX() {
+    public double getTipX() {
         return tipX;
     }
 
-    public void setTipX(float tipX) {
+    public void setTipX(Double tipX) {
         this.prevTipX = this.tipX;
         this.tipX = tipX;
     }
@@ -187,7 +187,7 @@ public class Vector {
         this.angleRate = angleRate;
     }
 
-    public float getPrevXPosition() {
+    public double getPrevXPosition() {
         return prevTipX;
     }
 
